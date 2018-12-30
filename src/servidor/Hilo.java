@@ -20,8 +20,6 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +31,7 @@ public class Hilo implements Runnable {
     private final PerfilesDAO perfilesDAO;
     private final UsuarioDAO usuarioDAO;
     private ServerSocket socketServer;
+    private Usuarios us;
 
     private ObjectOutputStream outO;
     private ObjectInputStream inO;
@@ -46,15 +45,30 @@ public class Hilo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("escuchando puerto " + socketServer.getLocalPort());
         while (true) {
             try {
-                System.out.println("escuchando puerto " + socketServer.getLocalPort());
                 Socket socket = socketServer.accept();
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                 DataInputStream in;
                 in = new DataInputStream(socket.getInputStream());
                 String c = in.readUTF();
                 switch (c) {
+
+                    case "d":
+                        System.out.println(String.format("Dato recibido de %s desde puerto %d", socket.getInetAddress().getHostName(), socket.getLocalPort()));
+                        inO = new ObjectInputStream(socket.getInputStream());
+                        us = (Usuarios) inO.readObject();
+                        out.writeUTF("Hola, " + us.getNombres() + " " + us.getApellidos());
+                        break;
+
+                    case "lg":
+                        inO = new ObjectInputStream(socket.getInputStream());
+                        us = (Usuarios) inO.readObject();
+                        loggin(us);
+                        outO = new ObjectOutputStream(socket.getOutputStream());
+                        outO.writeObject(us);
+                        break;
 
                     case "l":
                         obtenerPerfiles();
@@ -93,8 +107,11 @@ public class Hilo implements Runnable {
                         break;
 
                     case "ok":
-                        System.out.println("satisfactorio");
                         out.writeBoolean(true);
+                        break;
+
+                    case "lok":
+                        System.out.println("Usuario logueado desde puerto: " + socketServer.getLocalPort());
                         break;
 
                     default:
@@ -104,6 +121,18 @@ public class Hilo implements Runnable {
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    public void loggin(Usuarios u) {
+        try {
+            usuarioDAO.obtenerRegistro(u);
+            Perfiles p = new Perfiles();
+            p.setIdperfil(u.getIdperfil());
+            perfilesDAO.obtenerRegistro(p);
+            u.setPerfil(p);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
