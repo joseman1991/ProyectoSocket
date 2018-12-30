@@ -5,8 +5,14 @@
  */
 package cliente;
 
-import datos.Perfiles;
+import datos.Configuracion;
 import datos.Usuarios;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,11 +20,15 @@ import datos.Usuarios;
  */
 public class Login extends javax.swing.JFrame {
 
+    private Socket socket;
+    Configuracion configuracion;
+
     /**
      * Creates new form Login
      */
     public Login() {
         initComponents();
+        configuracion = new Configuracion();
         inicializarComponentes();
     }
 
@@ -38,9 +48,9 @@ public class Login extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtUsuario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        txtClave = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -65,8 +75,8 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1)
-                    .addComponent(jPasswordField1))
+                    .addComponent(txtUsuario)
+                    .addComponent(txtClave))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -75,11 +85,11 @@ public class Login extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -148,21 +158,44 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Main main = new Main();
         Usuarios u = new Usuarios();
-        u.setNombreusuario("Joe");
-        u.setClave("123456");
-        u.setNombres("Jose");
-        u.setApellidos("Rosado");
-        Perfiles p= new Perfiles();
-        p.setNombreperfil("Amin");
-        u.setPerfil(p);
-        u.setIdperfil(1);
-        main.setUsuario(u);
-        main.iniciar();
-        dispose();
+        u.setNombreusuario(txtUsuario.getText());
+        u.setClave(txtClave.getText());
+        int port = Integer.parseInt(configuracion.accderPorpiedades("puerto1"));
+        try {
+            socket = new Socket(configuracion.accderPorpiedades("IP"), port);
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            out.writeUTF("lg");
+            ObjectOutputStream outO = new ObjectOutputStream(socket.getOutputStream());
+            outO.writeObject(u);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            u = (Usuarios) in.readObject();
+            if (u.getNombres() != null) {
+                socket.close();
+                switch (u.getIdperfil()) {
+                    case 1:
+                        port = Integer.parseInt(configuracion.accderPorpiedades("puerto1"));
+                        break;
+
+                    case 2:
+                        port = Integer.parseInt(configuracion.accderPorpiedades("puerto2"));
+                        break;
+                }
+                socket = new Socket(configuracion.accderPorpiedades("IP"), port);
+                out = new DataOutputStream(socket.getOutputStream());
+                out.writeUTF("lok");
+                main.setUsuario(u);
+                main.iniciar();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenciales Incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -209,7 +242,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField txtClave;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }
