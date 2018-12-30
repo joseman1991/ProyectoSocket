@@ -46,7 +46,7 @@ public class ConexionMySQL<T extends Object> implements ModelDAO<T> {
         String servidor = ("localhost");
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            url = "jdbc:mysql://" + servidor + ":" + puerto + "/" + BaseDeDatos;
+            url = "jdbc:mysql://" + servidor + ":" + puerto + "/" + BaseDeDatos + "?autoReconnect=true&useSSL=false";
             conexion = DriverManager.getConnection(url, usuario, clave);
         } catch (ClassNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -120,6 +120,8 @@ public class ConexionMySQL<T extends Object> implements ModelDAO<T> {
             resultado = sentencia.executeQuery();
             if (resultado.next()) {
                 dato = obtenerResultado(dato);
+            } else {
+                dato = null;
             }
         } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | InvocationTargetException | SQLException e) {
             System.out.println(e.getMessage());
@@ -217,7 +219,6 @@ public class ConexionMySQL<T extends Object> implements ModelDAO<T> {
         campos = campos.replaceAll("\\s", "");
         this.columnas = campos.split(",");
         sqlScript = "update " + tabla + " set ";
-        System.out.println("col " + Arrays.toString(columnas) + columnas.length);
         for (int i = 0; i < this.columnas.length; i++) {
             String campo = this.columnas[i];
             if (i < this.columnas.length - 1) {
@@ -255,9 +256,9 @@ public class ConexionMySQL<T extends Object> implements ModelDAO<T> {
         construirSentenciaSelect();
         sentencia = conexion.prepareStatement(sqlScript);
         try {
-            llenarSentencia(dato);       
+            llenarSentencia(dato);
             System.out.println(sentencia);
-            columnas = temp;             
+            columnas = temp;
             resultado = sentencia.executeQuery();
             while (resultado.next()) {
                 T dato2 = (T) tipo.newInstance();

@@ -5,6 +5,7 @@
  */
 package cliente;
 
+import datos.Configuracion;
 import datos.Perfiles;
 import datos.Usuarios;
 import java.awt.event.ItemEvent;
@@ -23,6 +24,7 @@ import javax.swing.JOptionPane;
 public class Registro extends javax.swing.JDialog {
 
     private Socket socket;
+    private final Configuracion configuracion;
 
     public List<Perfiles> listaPerfiles;
     private int idperfil;
@@ -35,6 +37,7 @@ public class Registro extends javax.swing.JDialog {
      */
     public Registro(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        configuracion = new Configuracion();
         initComponents();
     }
 
@@ -262,7 +265,8 @@ public class Registro extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         try {
-            socket = new Socket("localhost", 5000);
+            int port = Integer.parseInt(configuracion.accderPorpiedades("puerto1"));
+            socket = new Socket(configuracion.accderPorpiedades("IP"), port);            
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF("i");
             Usuarios u = new Usuarios();

@@ -38,9 +38,9 @@ public class UsuarioDAO extends ConexionMySQL<Usuarios> {
 
     @Override
     public Usuarios obtenerRegistro(Usuarios dato) throws SQLException {
-        campos = "nombreusuario,clave,nombres,apellidos,idperfil";
+        campos = "nombreusuario,nombres,apellidos,idperfil";
         camposCondicion = "nombreusuario,clave";
-        condicion = "where nombreusuario and clave=?";
+        condicion = "where nombreusuario=? and clave=?";
         dato = super.obtenerRegistro(dato);
         cerrarConexion();
         return dato;

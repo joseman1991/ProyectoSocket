@@ -209,7 +209,7 @@ public class Cambio extends javax.swing.JDialog {
                 } else {
                     port = Integer.parseInt(configuracion.accderPorpiedades("puerto2"));
                 }
-                Socket s = new Socket("localhost", port);
+                Socket s = new Socket(configuracion.accderPorpiedades("IP"), port);
                 DataOutputStream out;
                 out = new DataOutputStream(s.getOutputStream());
                 out.writeUTF("t");
@@ -270,6 +270,7 @@ public class Cambio extends javax.swing.JDialog {
                 if (resultado) {
                     puertoActual.setText(txtPuerto.getText());
                     txtPuerto.setText("");
+                    lbEstado.setText("");
                     JOptionPane.showMessageDialog(this, "Puerto cambiado", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 }
             } else {
@@ -282,6 +283,7 @@ public class Cambio extends javax.swing.JDialog {
 
     private void txtPuertoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPuertoKeyTyped
         btnGuardar.setEnabled(false);
+        lbEstado.setText("");
     }//GEN-LAST:event_txtPuertoKeyTyped
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

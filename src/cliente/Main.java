@@ -9,9 +9,11 @@ import datos.Configuracion;
 import datos.DataSet;
 import datos.Perfiles;
 import datos.Usuarios;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -24,6 +26,7 @@ public class Main extends javax.swing.JFrame {
 
     private Usuarios usuario;
     private Configuracion configuracion;
+    private int puerto;
 
     /**
      * Creates new form Main
@@ -33,12 +36,28 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void iniciar() {
+
         setResizable(false);
         setLocationRelativeTo(null);
-        setVisible(true);
+
         nombre.setText(usuario.getNombres() + " " + usuario.getApellidos());
         perfil.setText(usuario.getPerfil().getNombreperfil());
         configuracion = new Configuracion();
+        switch (usuario.getIdperfil()) {
+            case 1:
+                puerto = Integer.parseInt(configuracion.accderPorpiedades("puerto1"));
+
+                break;
+
+            case 2:
+                MenuArchivo.setVisible(false);
+                menuRegistro.setVisible(false);
+                puerto = Integer.parseInt(configuracion.accderPorpiedades("puerto2"));
+                break;
+        }
+        lbPuerto.setText(puerto + "");
+        ///lbPuerto.setText("");
+        setVisible(true);
     }
 
     public void setUsuario(Usuarios usuario) {
@@ -61,15 +80,20 @@ public class Main extends javax.swing.JFrame {
         nombre = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         perfil = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        lbPuerto = new javax.swing.JLabel();
+        lbMensaje = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        MenuArchivo = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        menuRegistro = new javax.swing.JMenuItem();
+        menuLista = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -136,7 +160,43 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jMenu2.setText("Archivo");
+        jButton2.setText("Enviar Dato");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Puerto");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lbMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbPuerto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        MenuArchivo.setText("Archivo");
 
         jMenuItem1.setText("Configurar");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +204,7 @@ public class Main extends javax.swing.JFrame {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        MenuArchivo.add(jMenuItem1);
 
         jMenu3.setText("Cambiar puertos");
 
@@ -164,27 +224,27 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem4);
 
-        jMenu2.add(jMenu3);
+        MenuArchivo.add(jMenu3);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(MenuArchivo);
 
         jMenu1.setText("Usuarios");
 
-        jMenuItem2.setText("Registro");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuRegistro.setText("Registro");
+        menuRegistro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuRegistroActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        jMenu1.add(menuRegistro);
 
-        jMenuItem5.setText("Lista de Usuarios");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        menuLista.setText("Lista de Usuarios");
+        menuLista.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                menuListaActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem5);
+        jMenu1.add(menuLista);
 
         jMenuBar1.add(jMenu1);
 
@@ -198,7 +258,8 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -206,7 +267,9 @@ public class Main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -223,16 +286,15 @@ public class Main extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         Login l = new Login();
         l.setVisible(true);
-
     }//GEN-LAST:event_formWindowClosed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void menuRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRegistroActionPerformed
         try {
-            Socket s = new Socket("localhost", 5000);
+            Socket s = new Socket(configuracion.accderPorpiedades("IP"), puerto);
             DataOutputStream out;
             out = new DataOutputStream(s.getOutputStream());
             out.writeUTF("l");
@@ -245,17 +307,14 @@ public class Main extends javax.swing.JFrame {
             } else {
                 System.out.println("error");
             }
-
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }//GEN-LAST:event_menuRegistroActionPerformed
 
-
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void menuListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuListaActionPerformed
         try {
-            Socket s = new Socket("localhost", 5000);
+            Socket s = new Socket(configuracion.accderPorpiedades("IP"), puerto);
             DataOutputStream out;
             out = new DataOutputStream(s.getOutputStream());
             out.writeUTF("u");
@@ -267,36 +326,56 @@ public class Main extends javax.swing.JFrame {
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_menuListaActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         Cambio c = new Cambio(this, true);
-        c.setIsAdmin(true);         
+        c.setIsAdmin(true);
         c.inicializar();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         Cambio c = new Cambio(this, true);
-        c.setIsAdmin(false);        
+        c.setIsAdmin(false);
         c.inicializar();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            Socket s = new Socket(configuracion.accderPorpiedades("IP"), puerto);
+            DataOutputStream out;
+            out = new DataOutputStream(s.getOutputStream());
+            out.writeUTF("d");
+            ObjectOutputStream ou= new ObjectOutputStream(s.getOutputStream());
+            ou.writeUnshared(usuario);
+            DataInputStream in= new DataInputStream(s.getInputStream());
+            lbMensaje.setText(in.readUTF());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu MenuArchivo;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel lbMensaje;
+    private javax.swing.JLabel lbPuerto;
+    private javax.swing.JMenuItem menuLista;
+    private javax.swing.JMenuItem menuRegistro;
     private javax.swing.JLabel nombre;
     private javax.swing.JLabel perfil;
     // End of variables declaration//GEN-END:variables
