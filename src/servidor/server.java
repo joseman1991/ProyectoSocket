@@ -49,7 +49,7 @@ public class server {
                     System.err.println("Ingresa un numéro válido");
                     continue;
                 }
-                do {
+                do {                    
                     System.out.print("Ingresa el puerto del usuario: ");
                     numero = leer.next();
                     if (isNumero(numero)) {

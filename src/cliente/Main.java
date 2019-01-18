@@ -9,6 +9,7 @@ import datos.Configuracion;
 import datos.DataSet;
 import datos.Perfiles;
 import datos.Usuarios;
+import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,6 +17,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -40,6 +44,8 @@ public class Main extends javax.swing.JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
+        cargarImanes();
+        
         nombre.setText(usuario.getNombres() + " " + usuario.getApellidos());
         perfil.setText(usuario.getPerfil().getNombreperfil());
         configuracion = new Configuracion();
@@ -50,18 +56,40 @@ public class Main extends javax.swing.JFrame {
                 break;
 
             case 2:
-                MenuArchivo.setVisible(false);
+                fileM.setVisible(false);
                 menuRegistro.setVisible(false);
+                aggUM.setVisible(false);
+                updUM.setVisible(false);
                 puerto = Integer.parseInt(configuracion.accderPorpiedades("puerto2"));
                 break;
         }
         lbPuerto.setText(puerto + "");
         ///lbPuerto.setText("");
+       
+        
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 
     public void setUsuario(Usuarios usuario) {
         this.usuario = usuario;
+    }
+    
+    
+    private void cargarImanes(){
+        fileM.setIcon(obtenerIcono(40, 40, "file.png"));
+        ArtM.setIcon(obtenerIcono(40, 40, "art.png"));
+        registroM.setIcon(obtenerIcono(40, 40, "user.png"));     
+        confM.setIcon(obtenerIcono(30, 30, "setup.png"));
+        PortM.setIcon(obtenerIcono(30, 30, "port.png"));
+        UserM.setIcon(obtenerIcono(30, 30, "userP.png"));
+        AdminM.setIcon(obtenerIcono(30, 30, "admin.png"));
+        
+        menuRegistro.setIcon(obtenerIcono(30, 30, "resgister.png"));
+        ListaM.setIcon(obtenerIcono(30, 30, "listaU.png"));
+        aggUM.setIcon(obtenerIcono(30, 30, "addP.png"));
+        updUM.setIcon(obtenerIcono(30, 30, "box_edit.png"));
+        listUM.setIcon(obtenerIcono(30, 30, "listUP.png"));
     }
 
     /**
@@ -85,15 +113,20 @@ public class Main extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         lbPuerto = new javax.swing.JLabel();
         lbMensaje = new javax.swing.JLabel();
+        jDesktopPane1 = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        MenuArchivo = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        fileM = new javax.swing.JMenu();
+        confM = new javax.swing.JMenuItem();
+        PortM = new javax.swing.JMenu();
+        AdminM = new javax.swing.JMenuItem();
+        UserM = new javax.swing.JMenuItem();
+        registroM = new javax.swing.JMenu();
         menuRegistro = new javax.swing.JMenuItem();
-        menuLista = new javax.swing.JMenuItem();
+        ListaM = new javax.swing.JMenuItem();
+        ArtM = new javax.swing.JMenu();
+        aggUM = new javax.swing.JMenuItem();
+        updUM = new javax.swing.JMenuItem();
+        listUM = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -142,7 +175,7 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                .addComponent(nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -196,39 +229,50 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        MenuArchivo.setText("Archivo");
+        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
+        jDesktopPane1.setLayout(jDesktopPane1Layout);
+        jDesktopPane1Layout.setHorizontalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jDesktopPane1Layout.setVerticalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 344, Short.MAX_VALUE)
+        );
 
-        jMenuItem1.setText("Configurar");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        fileM.setText("Archivo");
+
+        confM.setText("Configurar");
+        confM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                confMActionPerformed(evt);
             }
         });
-        MenuArchivo.add(jMenuItem1);
+        fileM.add(confM);
 
-        jMenu3.setText("Cambiar puertos");
+        PortM.setText("Cambiar puertos");
 
-        jMenuItem3.setText("Administrador");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        AdminM.setText("Administrador");
+        AdminM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                AdminMActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem3);
+        PortM.add(AdminM);
 
-        jMenuItem4.setText("Usuario");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        UserM.setText("Usuario");
+        UserM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                UserMActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem4);
+        PortM.add(UserM);
 
-        MenuArchivo.add(jMenu3);
+        fileM.add(PortM);
 
-        jMenuBar1.add(MenuArchivo);
+        jMenuBar1.add(fileM);
 
-        jMenu1.setText("Usuarios");
+        registroM.setText("Usuarios");
 
         menuRegistro.setText("Registro");
         menuRegistro.addActionListener(new java.awt.event.ActionListener() {
@@ -236,17 +280,45 @@ public class Main extends javax.swing.JFrame {
                 menuRegistroActionPerformed(evt);
             }
         });
-        jMenu1.add(menuRegistro);
+        registroM.add(menuRegistro);
 
-        menuLista.setText("Lista de Usuarios");
-        menuLista.addActionListener(new java.awt.event.ActionListener() {
+        ListaM.setText("Lista de Usuarios");
+        ListaM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuListaActionPerformed(evt);
+                ListaMActionPerformed(evt);
             }
         });
-        jMenu1.add(menuLista);
+        registroM.add(ListaM);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(registroM);
+
+        ArtM.setText("Articulos");
+
+        aggUM.setText("Agregar");
+        aggUM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aggUMActionPerformed(evt);
+            }
+        });
+        ArtM.add(aggUM);
+
+        updUM.setText("Actualizar");
+        updUM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updUMActionPerformed(evt);
+            }
+        });
+        ArtM.add(updUM);
+
+        listUM.setText("Listar");
+        listUM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listUMActionPerformed(evt);
+            }
+        });
+        ArtM.add(listUM);
+
+        jMenuBar1.add(ArtM);
 
         setJMenuBar(jMenuBar1);
 
@@ -254,12 +326,13 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jDesktopPane1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -269,7 +342,9 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jDesktopPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -277,11 +352,11 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void confMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confMActionPerformed
         Configure conf = new Configure(this, true);
         conf.setLocationRelativeTo(this);
         conf.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_confMActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         Login l = new Login();
@@ -312,7 +387,7 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuRegistroActionPerformed
 
-    private void menuListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuListaActionPerformed
+    private void ListaMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ListaMActionPerformed
         try {
             Socket s = new Socket(configuracion.accderPorpiedades("IP"), puerto);
             DataOutputStream out;
@@ -326,19 +401,19 @@ public class Main extends javax.swing.JFrame {
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_menuListaActionPerformed
+    }//GEN-LAST:event_ListaMActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void AdminMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminMActionPerformed
         Cambio c = new Cambio(this, true);
         c.setIsAdmin(true);
         c.inicializar();
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_AdminMActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void UserMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserMActionPerformed
         Cambio c = new Cambio(this, true);
         c.setIsAdmin(false);
         c.inicializar();
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_UserMActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
@@ -346,37 +421,72 @@ public class Main extends javax.swing.JFrame {
             DataOutputStream out;
             out = new DataOutputStream(s.getOutputStream());
             out.writeUTF("d");
-            ObjectOutputStream ou= new ObjectOutputStream(s.getOutputStream());
+            ObjectOutputStream ou = new ObjectOutputStream(s.getOutputStream());
             ou.writeUnshared(usuario);
-            DataInputStream in= new DataInputStream(s.getInputStream());
+            DataInputStream in = new DataInputStream(s.getInputStream());
             lbMensaje.setText(in.readUTF());
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void aggUMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aggUMActionPerformed
+        Vista_articulo vista_articulo=new Vista_articulo();
+        controladorArticulo art= new controladorArticulo(vista_articulo);
+        vista_articulo.setLocation(jDesktopPane1.getWidth()/2 - vista_articulo.getWidth()/2, 10);
+        jDesktopPane1.add(vista_articulo);
+        art.IniciarVistaArticulo();
+    }//GEN-LAST:event_aggUMActionPerformed
+
+    private void updUMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updUMActionPerformed
+          Vista_articulo vista_articulo=new Vista_articulo();
+        controladorArticulo art= new controladorArticulo(vista_articulo);
+        vista_articulo.setLocation(jDesktopPane1.getWidth()/2 - vista_articulo.getWidth()/2, 10);
+        jDesktopPane1.add(vista_articulo);
+        art.op=2;
+        art.IniciarVistaArticulo();
+    }//GEN-LAST:event_updUMActionPerformed
+
+    private void listUMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listUMActionPerformed
+        Articulo vista_articulo= new Articulo();
+        controladorListaArticulo coArticulo= new controladorListaArticulo(vista_articulo);
+        vista_articulo.setLocation(jDesktopPane1.getWidth()/2 - vista_articulo.getWidth()/2, 10);
+        jDesktopPane1.add(vista_articulo);        
+        coArticulo.IniciarVistaProducto();
+    }//GEN-LAST:event_listUMActionPerformed
+
+    public Icon obtenerIcono(int ancho, int alto, String file) {
+        ImageIcon image = new ImageIcon("recursos/" + file);
+        Icon icono = new ImageIcon(image.getImage().getScaledInstance(ancho, alto, Image.SCALE_REPLICATE));
+        return icono;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu MenuArchivo;
+    private javax.swing.JMenuItem AdminM;
+    private javax.swing.JMenu ArtM;
+    private javax.swing.JMenuItem ListaM;
+    private javax.swing.JMenu PortM;
+    private javax.swing.JMenuItem UserM;
+    private javax.swing.JMenuItem aggUM;
+    private javax.swing.JMenuItem confM;
+    private javax.swing.JMenu fileM;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lbMensaje;
     private javax.swing.JLabel lbPuerto;
-    private javax.swing.JMenuItem menuLista;
+    private javax.swing.JMenuItem listUM;
     private javax.swing.JMenuItem menuRegistro;
     private javax.swing.JLabel nombre;
     private javax.swing.JLabel perfil;
+    private javax.swing.JMenu registroM;
+    private javax.swing.JMenuItem updUM;
     // End of variables declaration//GEN-END:variables
 }
