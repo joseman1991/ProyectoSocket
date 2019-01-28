@@ -29,6 +29,18 @@ select * from usuarios;
 
 select * from perfiles;
 
+create table estados(
+codestado char not null primary key,
+descripcion character varying(30)
+);
+
+
+
+insert into estados values ('A','ACTIVO');
+insert into estados values ('I','INACTIVO');
+insert into estados values ('E','ERROR');
+insert into estados values ('C','CORRECTO');
+
 
 create table categorias
 (
@@ -72,4 +84,5 @@ create table articulos
   constraint fkey_codcategoria2 foreign key(codcategoria) references categorias(codcategoria) on update cascade on delete restrict,
   constraint fkey_codsubcategoria foreign key(codsubcategoria) references subcategorias(codsubcategoria) on update cascade on delete restrict 
 );
+
 

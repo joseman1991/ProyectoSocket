@@ -5,7 +5,6 @@ package datos;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -85,8 +84,8 @@ public class ArticuloDAO extends ConexionMySQL {
     public DataSet obtenerArticulos(String busca, int codc) throws SQLException {
         DataSet dt = new DataSet();
         abrirConexion();
-        sentencia = conexion.prepareStatement("select codarticulo as Codigo, descripcion as producto, round(costo::numeric,2), pvp, stock, estado from articulos  "
-                + " where (codarticulo like ? or  descripcion ilike ? or descripcion ilike ?) and codsubcategoria=?"
+        sentencia = conexion.prepareStatement("select codarticulo as Codigo, descripcion as producto, round(costo,2), pvp, stock, estado from articulos  "
+                + " where (codarticulo like ? or  descripcion like ? or descripcion like ?) and codsubcategoria=?"
                 + " order by codarticulo");
         sentencia.setString(1, busca + "%");
         sentencia.setString(2, busca + "%");
@@ -247,7 +246,7 @@ public class ArticuloDAO extends ConexionMySQL {
         abrirConexion();
         sentencia = conexion.prepareStatement("UPDATE articulos "
                 + "   SET codcategoria=?, codsubcategoria=?, descripcion=?, "
-                + "   grabaiva=?, costo=?, pvp=?, estado=?"
+                + "   grabaiva=?, costo=?, pvp=?, estado=?, stock=?"
                 + " WHERE codarticulo=?");
         int i = 1;
         sentencia.setInt(i++, art.getCodcategoria());
@@ -257,6 +256,7 @@ public class ArticuloDAO extends ConexionMySQL {
         sentencia.setDouble(i++, art.getCosto());
         sentencia.setDouble(i++, art.getPvp());
         sentencia.setString(i++, art.getCodestado() + "");
+        sentencia.setDouble(i++, art.getStock());
         sentencia.setString(i++, art.getCodarticulo());
         int exc = sentencia.executeUpdate();
         cerrarConexion();
