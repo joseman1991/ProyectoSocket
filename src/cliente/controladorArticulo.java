@@ -33,6 +33,7 @@ import datos.DataSet;
 import datos.EstadoDAO;
 import datos.SubCategoriasDAO;
 import datos.Subcategorias;
+import java.awt.HeadlessException;
 
 public class controladorArticulo {
 
@@ -143,7 +144,7 @@ public class controladorArticulo {
             }
 
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(vista_articulo, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -231,12 +232,12 @@ public class controladorArticulo {
 
                 vista_articulo.buscaT.addActionListener((ActionEvent e) -> {
                     if (vista_articulo.buscaT.isSelected()) {
-                        vista_articulo.buscaT.setToolTipText("Busca todo, sin importar categorÃ¬a");
+                        vista_articulo.buscaT.setToolTipText("Busca todo, sin importar categoría");
                         vista_articulo.buscaT.setText("Buscar todos");
                         op = 1;
                     } else {
-                        vista_articulo.buscaT.setToolTipText("Busca por categorÃ­a");
-                        vista_articulo.buscaT.setText("Buscar por categorÃ­as");
+                        vista_articulo.buscaT.setToolTipText("Busca por categoría");
+                        vista_articulo.buscaT.setText("Buscar por categorías");
                         vista_articulo.categorias.setSelectedIndex(-1);
                         vista_articulo.categorias.setSelectedIndex(0);
                     }
@@ -247,32 +248,34 @@ public class controladorArticulo {
         }
 
         vista_articulo.accion.addActionListener((ActionEvent e) -> {
-            try {
-                if (vista_articulo.descripcion.getText().equals("")) {
-                    JOptionPane.showMessageDialog(vista_articulo, "Ingresa el nombre del artÃ­culo", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if ((double) vista_articulo.pvp.getValue() == 0) {
-                    JOptionPane.showMessageDialog(vista_articulo, "Ingresa el precio de venta al pÃºblico del artÃ­culo", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (vista_articulo.subcategoria.getItemCount() == 0) {
-                    JOptionPane.showMessageDialog(vista_articulo, "Selecciona una subcategorÃ­a", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (vista_articulo.categorias.getItemCount() == 0) {
-                    JOptionPane.showMessageDialog(vista_articulo, "Selecciona una categorÃ­a", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
+            if (vista_articulo.descripcion.getText().equals("")) {
+                JOptionPane.showMessageDialog(vista_articulo, "Ingresa el nombre del artículo", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (Double.parseDouble(vista_articulo.pvp.getValue().toString()) == 0) {
+                JOptionPane.showMessageDialog(vista_articulo, "Ingresa el precio de venta al público del artículo", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (vista_articulo.subcategoria.getItemCount() == 0) {
+                JOptionPane.showMessageDialog(vista_articulo, "Selecciona una subcategoría", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (vista_articulo.categorias.getItemCount() == 0) {
+                JOptionPane.showMessageDialog(vista_articulo, "Selecciona una categoría", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
                     articulo.setDescripcion(vista_articulo.descripcion.getText());
-                    articulo.setCosto((double) vista_articulo.costo.getValue());
-                    articulo.setPvp((double) vista_articulo.pvp.getValue());
+                    articulo.setCosto(Double.parseDouble(vista_articulo.costo.getValue().toString()));
+                    articulo.setPvp(Double.parseDouble(vista_articulo.pvp.getValue().toString()));
+                    articulo.setStock(Double.parseDouble(vista_articulo.stock.getValue().toString()));
                     int exc = 0;
                     String operacion = "guardado";
+                    System.out.println("operacion " + op);
                     switch (op) {
                         case 1:
                             articulo.setCodarticulo(articuloDAO.nextCodigoArt());
-                            articulo.setStock((double) vista_articulo.stock.getValue());
+                            //articulo.setStock(Double.parseDouble( vista_articulo.stock.getValue().toString()));
                             System.out.println(articulo.getCodestado());
                             exc = articuloDAO.insertarArticulo(articulo);
                             break;
 
                         case 2:
                             if (vista_articulo.codArt.getText().equals("")) {
-                                JOptionPane.showMessageDialog(vista_articulo, "Selecciona el artÃ­culo que deseas actualizar", "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(vista_articulo, "Selecciona el artículo que deseas actualizar", "Error", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 exc = articuloDAO.actualizarArticulo(articulo);
                                 operacion = "actualizado";
@@ -285,8 +288,13 @@ public class controladorArticulo {
                             op = 1;
                         }
                         buscar();
-                        op = 2;
-                        JOptionPane.showMessageDialog(vista_articulo, "ArtÃ­culo " + operacion + " exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
+
+                        if (operacion.equals("actualizado")) {
+                            op = 2;
+                        } else {
+                            op = 1;
+                        }
+                        JOptionPane.showMessageDialog(vista_articulo, "Artículo " + operacion + " exitosamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
                         vista_articulo.codArt.setText(articuloDAO.nextCodigoArt());
                         vista_articulo.descripcion.setText("");
                         vista_articulo.costo.setValue(0);
@@ -295,10 +303,11 @@ public class controladorArticulo {
                     } else {
                         JOptionPane.showMessageDialog(vista_articulo, "Ha ocurrido un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
                     }
+                } catch (HeadlessException | SQLException exxx) {
+                    JOptionPane.showMessageDialog(vista_articulo, exxx.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
                 }
 
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista_articulo, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         });
